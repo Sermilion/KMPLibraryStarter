@@ -9,8 +9,7 @@ plugins {
   alias(libs.plugins.detekt) apply false
   alias(libs.plugins.compose.compiler) apply false
   alias(libs.plugins.compose.multiplatform) apply false
-  alias(libs.plugins.sqldelight) apply false
-  alias(libs.plugins.kover) apply false
+  alias(libs.plugins.room3) apply false
 }
 
 gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))

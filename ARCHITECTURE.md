@@ -4,15 +4,15 @@ A Kotlin Multiplatform library template for building cross-platform UI component
 
 ## Overview
 
-KMPLibraryStarter is a starter template for building cross-platform UI libraries using Compose Multiplatform. It follows Clean Architecture principles with clear separation between data, domain, and presentation layers.
+KMPLibraryStarter is a starter template for building cross-platform UI libraries using Compose Multiplatform. It follows Clean Architecture principles with clear separation between data, domain, and UI/presentation responsibilities.
 
 ## Supported Platforms
 
 | Platform | SDK/Version | Notes |
 |----------|-------------|-------|
 | Android | minSdk 26, compileSdk 36 | Jetpack Compose |
-| iOS | arm64, x64, simulatorArm64 | Compose Multiplatform |
-| JVM | Java 11+ | Desktop/Server |
+| iOS | arm64, simulatorArm64 | Compose Multiplatform |
+| JVM | Java 11 bytecode target | Build with JDK 17 |
 
 ## Module Structure
 
@@ -102,8 +102,8 @@ All dependencies are centralized in `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-kotlin = "2.2.21"
-compose-multiplatform = "1.10.0-beta02"
+kotlin = "2.3.10"
+compose-multiplatform = "1.10.2"
 coroutines = "1.10.2"
 
 [libraries]
@@ -199,29 +199,39 @@ Business logic layer (interfaces and use cases).
 
 Data layer implementation.
 
-**Database (SQLDelight):**
+**Database (Room 3):**
 
-```sql
--- User.sq
-CREATE TABLE UserEntity (
-  id TEXT NOT NULL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT,
-  createdAt INTEGER NOT NULL
-);
+```kotlin
+@Entity(tableName = "users")
+data class UserEntity(
+  @PrimaryKey val id: String,
+  val name: String,
+  val email: String?,
+  val createdAt: Long,
+)
 
-selectAll: SELECT * FROM UserEntity;
-selectById: SELECT * FROM UserEntity WHERE id = ?;
-insert: INSERT OR REPLACE INTO UserEntity(id, name, email, createdAt) VALUES (?, ?, ?, ?);
+@Dao
+interface UserDao {
+  @Query("SELECT * FROM users ORDER BY createdAt DESC")
+  fun observeUsers(): Flow<List<UserEntity>>
+
+  @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+  suspend fun getById(id: String): UserEntity?
+
+  @Upsert
+  suspend fun upsert(user: UserEntity)
+}
 ```
 
-**Platform Drivers:**
+**Platform Setup:**
 
-| Platform | Driver |
-|----------|--------|
-| Android | SQLDelight Android Driver |
-| iOS | SQLDelight Native Driver |
-| JVM | SQLDelight JDBC Driver (SQLite) |
+| Platform | Builder Input |
+|----------|---------------|
+| Android | `Context.getDatabasePath(...)` |
+| iOS | `NSFileManager` document directory |
+| JVM | File path in the host JVM filesystem |
+
+All targets use Room 3 with `BundledSQLiteDriver` for consistent SQLite behavior.
 
 **Networking (Ktor):**
 
@@ -289,7 +299,6 @@ KSP processors configured for all targets:
 - kspAndroid
 - kspIosArm64
 - kspIosSimulatorArm64
-- kspIosX64
 - kspJvm
 
 ## Code Quality
@@ -388,9 +397,10 @@ dependencies {
 
 ### Prerequisites
 
-- JDK 11+
-- Android Studio or IntelliJ IDEA
-- Xcode (for iOS development)
+- JDK 17
+- Latest stable Android Studio or IntelliJ IDEA
+- Latest stable Xcode (for iOS development)
+- The build uses JDK 17, while Android and JVM artifacts remain on Java 11 bytecode unless you intentionally migrate the published API level
 
 ### Build Commands
 
@@ -450,7 +460,7 @@ com.sermilion.kmpstarter/
 
 1. **Compose Multiplatform** over platform-specific UI for maximum code sharing
 2. **kotlin-inject** over Koin/Hilt for compile-time safety and multiplatform support
-3. **SQLDelight** over Room for true multiplatform database
+3. **Room 3** for a coroutine-first multiplatform database API
 4. **Ktor** over Retrofit for multiplatform networking
 5. **KoTest** over JUnit for better Kotlin DSL and multiplatform support
 6. **Convention plugins** over shared buildSrc for better isolation and caching

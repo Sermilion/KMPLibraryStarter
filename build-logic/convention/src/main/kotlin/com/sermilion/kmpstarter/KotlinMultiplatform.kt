@@ -49,7 +49,6 @@ internal fun Project.configureKotlinMultiplatform(
 
     jvm()
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -110,7 +109,6 @@ internal fun Project.configureKotlinMultiplatformCompose(
 
     jvm()
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 

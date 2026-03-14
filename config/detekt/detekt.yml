@@ -363,7 +363,7 @@ potential-bugs:
   WrongEqualsTypeParameter:
     active: true
 
-TwitterCompose:
+Compose:
   CompositionLocalAllowlist:
     active: true
     allowedCompositionLocals:
@@ -400,11 +400,12 @@ style:
     active: false
   ForbiddenComment:
     active: true
-    values:
-      - 'FIXME:'
-      - 'STOPSHIP:'
+    comments:
+      - value: 'FIXME:'
+        reason: 'Fix the underlying issue instead of leaving a FIXME marker in committed code.'
+      - value: 'STOPSHIP:'
+        reason: 'Remove STOPSHIP markers before merging or publishing the starter.'
     allowedPatterns: ''
-    customMessage: ''
   ForbiddenImport:
     active: false
   ForbiddenMethodCall:
@@ -439,7 +440,7 @@ style:
     ignoreEnums: true
     ignoreRanges: true
     ignoreExtensionFunctions: true
-  MandatoryBracesIfStatements:
+  BracesOnIfStatements:
     active: false
   MandatoryBracesLoops:
     active: false

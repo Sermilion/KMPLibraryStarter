@@ -22,11 +22,11 @@ kotlin {
       api(projects.core.designsystem)
       implementation(projects.core.domain)
 
-      implementation(compose.runtime)
-      implementation(compose.foundation)
-      implementation(compose.material3)
-      implementation(compose.ui)
-      implementation(compose.components.resources)
+      implementation(libs.compose.runtime)
+      implementation(libs.compose.foundation)
+      implementation(libs.compose.material3)
+      implementation(libs.compose.ui)
+      implementation(libs.compose.resources)
       implementation(libs.serialization.json)
       implementation(libs.kotlinx.collections.immutable)
       implementation(libs.kermit)
@@ -48,7 +48,6 @@ dependencies {
   add("kspAndroid", libs.kotlin.inject.compiler)
   add("kspIosArm64", libs.kotlin.inject.compiler)
   add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
-  add("kspIosX64", libs.kotlin.inject.compiler)
   add("kspJvm", libs.kotlin.inject.compiler)
 }
 

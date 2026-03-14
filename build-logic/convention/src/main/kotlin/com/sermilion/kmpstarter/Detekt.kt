@@ -19,9 +19,11 @@ internal fun Project.configureDetekt() {
 
   configure<DetektExtension> {
     val moduleConfig = file("$projectDir/detekt.yml")
+    val configs = mutableListOf<Any>(file("$rootDir/config/detekt/detekt.yml"))
     if (moduleConfig.exists()) {
-      config.setFrom("$rootDir/config/detekt/detekt.yml", moduleConfig)
+      configs += moduleConfig
     }
+    config.setFrom(configs)
     baseline = file("$rootDir/config/detekt/detekt-baseline.xml")
     basePath = rootDir.absolutePath
     buildUponDefaultConfig = true

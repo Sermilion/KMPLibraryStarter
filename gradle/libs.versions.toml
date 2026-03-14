@@ -1,6 +1,8 @@
 [versions]
-androidGradlePlugin = "8.13.1"
-composeMultiplatform = "1.10.0-beta02"
+androidGradlePlugin = "8.12.0"
+composeMultiplatform = "1.10.2"
+composeMaterial3 = "1.9.0"
+composeMaterialIconsExtended = "1.7.3"
 androidxActivity = "1.11.0"
 androidxAppCompat = "1.7.1"
 androidxCore = "1.17.0"
@@ -13,7 +15,7 @@ detekt = "1.23.8"
 detektCompose = "0.4.22"
 jacoco = "0.8.12"
 ksoup = "0.2.5"
-kotlin = "2.2.21"
+kotlin = "2.3.10"
 okio = "3.16.4"
 kotlinxCoroutines = "1.10.2"
 kotlinxCoroutinesTest = "1.10.2"
@@ -22,7 +24,7 @@ kotlinxAtomicfu = "0.29.0"
 kotest = "5.9.1"
 ktor = "3.3.2"
 kotlinInject = "0.8.0"
-ksp = "2.3.2"
+ksp = "2.3.6"
 okhttp = "4.12.0"
 mockk = "1.14.6"
 mokkery = "2.10.2"
@@ -30,8 +32,9 @@ minSdk = "26"
 paging = "3.3.6"
 pagingCompose = "3.4.0-alpha04"
 pluto = "2.2.2"
-sqldelight = "2.2.1"
-sqliteJdbc = "3.51.0.0"
+room3 = "3.0.0-alpha01"
+sqliteBundled = "2.6.2"
+sqliteJdbc = "3.51.2.0"
 spotless = "7.2.1"
 kermit = "2.0.8"
 junitVersion = "1.3.0"
@@ -91,13 +94,9 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 
-sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
-sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
-sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-sqldelight-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
-sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
-sqldelight-jdbc-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
-sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
+room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3" }
+room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room3" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqliteBundled" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }
 
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
@@ -113,6 +112,15 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "composeMultiplatform" }
+compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeMultiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
+compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "composeMaterialIconsExtended" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMaterial3" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
+detekt-compose-rules = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
@@ -122,10 +130,9 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.3" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+room3 = { id = "androidx.room3", version.ref = "room3" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
 # Plugins defined by this project

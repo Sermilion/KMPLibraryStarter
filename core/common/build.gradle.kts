@@ -17,7 +17,7 @@ kotlin {
       implementation(libs.kotlin.inject.runtime)
       api(libs.jetbrains.lifecycle.viewmodel)
       api(libs.jetbrains.lifecycle.viewmodel.compose)
-      implementation(compose.runtime)
+      implementation(libs.compose.runtime)
       api(libs.kermit)
     }
 
@@ -49,7 +49,6 @@ dependencies {
   add("kspAndroid", libs.kotlin.inject.compiler)
   add("kspIosArm64", libs.kotlin.inject.compiler)
   add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
-  add("kspIosX64", libs.kotlin.inject.compiler)
   add("kspJvm", libs.kotlin.inject.compiler)
 }
 

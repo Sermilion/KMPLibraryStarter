@@ -10,21 +10,23 @@ KMPLibraryStarter provides a solid foundation for building cross-platform librar
 
 - **Kotlin Multiplatform** - Share code across Android, iOS, and JVM
 - **Compose Multiplatform** - Build shared UI with Jetpack Compose
-- **Clean Architecture** - Clear separation of data, domain, and presentation layers
+- **Clean Architecture** - Clear separation of data, domain, and UI/presentation layers
 - **Convention Plugins** - Consistent build configuration across modules
 - **Dependency Injection** - Compile-time safe DI with kotlin-inject
-- **Database** - SQLDelight for multiplatform persistence
+- **Database** - Room 3 with bundled SQLite for multiplatform persistence
 - **Networking** - Ktor client with platform-specific engines
 - **Testing** - KoTest framework with MockK
 - **Code Quality** - Detekt, ktlint, and Jacoco coverage
+- **Automation** - GitHub Actions check workflow and Dependabot updates
+- **Agent Guidance** - Root-level `AGENTS.md` and `CLAUDE.md` for AI-assisted maintenance
 
 ## Supported Platforms
 
 | Platform | Min Version | Notes |
 |----------|-------------|-------|
 | Android | API 26 | Jetpack Compose |
-| iOS | arm64, x64, simulatorArm64 | Compose Multiplatform |
-| JVM | Java 11+ | Desktop/Server |
+| iOS | arm64, simulatorArm64 | Compose Multiplatform |
+| JVM | Java 11 bytecode target | Build with JDK 17 |
 
 ## Project Structure
 
@@ -74,9 +76,10 @@ KMPLibraryStarter/
 
 ### Prerequisites
 
-- JDK 11 or higher
-- Android Studio Hedgehog (2023.1.1) or newer
-- Xcode 15+ (for iOS development)
+- JDK 17
+- Latest stable Android Studio or IntelliJ IDEA
+- Latest stable Xcode (required for iOS framework builds)
+- The build runs on JDK 17, while Android and JVM artifacts stay on Java 11 bytecode for broader consumer compatibility
 
 ### Clone and Build
 
@@ -93,6 +96,12 @@ cd KMPLibraryStarter
 # Format code
 ./gradlew spotlessApply
 ```
+
+### Starter Maintenance
+
+- Read `AGENTS.md` before making structural, build, or release-related changes.
+- Use `./gradlew check` as the default validation gate for local changes and CI.
+- Update shared dependency versions through `gradle/libs.versions.toml` instead of hardcoding them in module scripts.
 
 ### IDE Setup
 
@@ -267,20 +276,28 @@ class GetUserUseCase @Inject constructor(
 
 ### data
 
-Data layer with SQLDelight database and Ktor networking:
+Data layer with Room 3 database and Ktor networking:
 
-```sql
--- User.sq
-CREATE TABLE UserEntity (
-  id TEXT NOT NULL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT,
-  createdAt INTEGER NOT NULL
-);
+```kotlin
+@Entity(tableName = "users")
+data class UserEntity(
+  @PrimaryKey val id: String,
+  val name: String,
+  val email: String?,
+  val createdAt: Long,
+)
 
-selectAll: SELECT * FROM UserEntity;
-selectById: SELECT * FROM UserEntity WHERE id = ?;
-insert: INSERT OR REPLACE INTO UserEntity(id, name, email, createdAt) VALUES (?, ?, ?, ?);
+@Dao
+interface UserDao {
+  @Query("SELECT * FROM users ORDER BY createdAt DESC")
+  fun observeUsers(): Flow<List<UserEntity>>
+
+  @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+  suspend fun getById(id: String): UserEntity?
+
+  @Upsert
+  suspend fun upsert(user: UserEntity)
+}
 ```
 
 ### datastore
@@ -438,7 +455,7 @@ To change the package name from `com.sermilion.kmpstarter`:
 1. Update `namespace` in all module `build.gradle.kts` files
 2. Rename package directories in `src/*/kotlin/`
 3. Update imports in all Kotlin files
-4. Update SQLDelight `packageName` in `core/data/build.gradle.kts`
+4. Update Room entities, DAO, and builder packages in `core/data/src/*/kotlin/`
 
 ### Theme Colors
 
@@ -469,11 +486,11 @@ val KmpTypography = Typography(
 
 | Category | Library |
 |----------|---------|
-| Language | Kotlin 2.2.21 |
-| UI | Compose Multiplatform 1.10.0-beta02 |
+| Language | Kotlin 2.3.10 |
+| UI | Compose Multiplatform 1.10.2 |
 | Async | Kotlin Coroutines 1.10.2 |
 | DI | kotlin-inject |
-| Database | SQLDelight 2.2.1 |
+| Database | Room 3.0.0-alpha01 |
 | Network | Ktor 3.3.2 |
 | Preferences | AndroidX DataStore |
 | Images | Coil 3 |
@@ -516,6 +533,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 - [Kotlin Multiplatform Documentation](https://kotlinlang.org/docs/multiplatform.html)
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
-- [SQLDelight](https://cashapp.github.io/sqldelight/)
+- [Room KMP](https://developer.android.com/kotlin/multiplatform/room)
 - [Ktor Client](https://ktor.io/docs/client.html)
 - [kotlin-inject](https://github.com/evant/kotlin-inject)

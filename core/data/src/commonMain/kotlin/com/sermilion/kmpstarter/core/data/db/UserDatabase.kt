@@ -9,7 +9,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 internal const val USER_DATABASE_FILE_NAME = "user.db"
 
 @Database(
-  entities = [UserEntity::class],
+  entities = [UserDataModel::class],
   version = 1,
   exportSchema = true,
 )

@@ -5,11 +5,14 @@ plugins {
   alias(libs.plugins.compose.compiler)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.designsystem"
-}
-
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.designsystem"
+    androidResources {
+      enable = true
+    }
+  }
+
   sourceSets {
     commonMain.dependencies {
       api(projects.core.common)

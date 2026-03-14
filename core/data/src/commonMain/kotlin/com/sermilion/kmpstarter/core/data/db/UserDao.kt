@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
   @Query("SELECT * FROM users ORDER BY createdAt DESC")
-  fun observeUsers(): Flow<List<UserEntity>>
+  fun observeUsers(): Flow<List<UserDataModel>>
 
   @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-  suspend fun getById(id: String): UserEntity?
+  suspend fun getById(id: String): UserDataModel?
 
   @Upsert
-  suspend fun upsert(user: UserEntity)
+  suspend fun upsert(user: UserDataModel)
 }

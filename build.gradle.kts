@@ -1,11 +1,11 @@
 plugins {
   alias(libs.plugins.android.library) apply false
+  alias(libs.plugins.android.kotlin.multiplatform.library) apply false
   alias(libs.plugins.kotlin.jvm) apply false
   alias(libs.plugins.kotlin.multiplatform) apply false
   alias(libs.plugins.kotlin.serialization) apply false
   alias(libs.plugins.ksp) apply false
   alias(libs.plugins.spotless)
-  alias(libs.plugins.org.jetbrains.kotlin.android) apply false
   alias(libs.plugins.detekt) apply false
   alias(libs.plugins.compose.compiler) apply false
   alias(libs.plugins.compose.multiplatform) apply false
@@ -18,6 +18,10 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+  }
+  dependencies {
+    classpath(libs.kotlin.gradlePlugin)
+    classpath(libs.ksp.gradlePlugin)
   }
 }
 
@@ -53,21 +57,6 @@ subprojects {
     kotlinGradle {
       target("*.gradle.kts")
       ktlint()
-    }
-  }
-
-  afterEvaluate {
-    extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
-      packagingOptions {
-        resources.excludes.addAll(
-          listOf(
-            "/META-INF/{AL2.0,LGPL2.1}",
-            "META-INF/versions/**",
-            "META-INF/LICENSE.md",
-            "META-INF/LICENSE-notice.md"
-          )
-        )
-      }
     }
   }
 }

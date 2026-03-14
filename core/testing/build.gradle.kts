@@ -2,11 +2,11 @@ plugins {
   alias(libs.plugins.kmp.library)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.testing"
-}
-
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.testing"
+  }
+
   sourceSets {
     commonMain.dependencies {
       api(projects.core.common)

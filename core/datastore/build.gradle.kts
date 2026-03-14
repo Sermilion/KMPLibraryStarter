@@ -5,17 +5,12 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.datastore"
-
-  testOptions {
-    unitTests.all {
-      it.useJUnitPlatform()
-    }
-  }
-}
-
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.datastore"
+    withHostTest {}
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.domain)
@@ -40,7 +35,7 @@ kotlin {
       implementation(kotlin("test"))
     }
 
-    androidUnitTest.dependencies {
+    getByName("androidHostTest").dependencies {
       implementation(projects.core.testing)
       implementation(libs.androidx.junit)
       implementation(libs.kotest.runner.junit5.jvm)
@@ -59,6 +54,6 @@ dependencies {
   add("kspJvm", libs.kotlin.inject.compiler)
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
   useJUnitPlatform()
 }

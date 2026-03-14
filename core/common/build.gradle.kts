@@ -7,6 +7,11 @@ plugins {
 }
 
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.common"
+    withHostTest {}
+  }
+
   compilerOptions {
     freeCompilerArgs.add("-Xexpect-actual-classes")
   }
@@ -34,7 +39,7 @@ kotlin {
       implementation(kotlin("test"))
     }
 
-    androidUnitTest.dependencies {
+    getByName("androidHostTest").dependencies {
       implementation(libs.androidx.junit)
       implementation(libs.kotest.runner.junit5.jvm)
     }
@@ -52,16 +57,6 @@ dependencies {
   add("kspJvm", libs.kotlin.inject.compiler)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.common"
-
-  testOptions {
-    unitTests.all {
-      it.useJUnitPlatform()
-    }
-  }
-}
-
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
   useJUnitPlatform()
 }

@@ -1,18 +1,9 @@
 plugins {
   alias(libs.plugins.kmp.library)
+  alias(libs.plugins.kmp.jacoco)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.ksp)
   alias(libs.plugins.room3)
-}
-
-android {
-  namespace = "com.sermilion.kmpstarter.core.data"
-
-  testOptions {
-    unitTests.all {
-      it.useJUnitPlatform()
-    }
-  }
 }
 
 room3 {
@@ -20,6 +11,11 @@ room3 {
 }
 
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.data"
+    withHostTest {}
+  }
+
   compilerOptions {
     freeCompilerArgs.add("-Xsuppress-version-warnings")
     freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -86,7 +82,7 @@ kotlin {
       implementation(kotlin("test"))
     }
 
-    androidUnitTest.dependencies {
+    getByName("androidHostTest").dependencies {
       implementation(projects.core.testing)
       implementation(libs.androidx.junit)
       implementation(libs.kotest.runner.junit5.jvm)
@@ -101,7 +97,6 @@ kotlin {
 }
 
 dependencies {
-  add("kspCommonMainMetadata", libs.room3.compiler)
   add("kspAndroid", libs.room3.compiler)
   add("kspIosArm64", libs.room3.compiler)
   add("kspIosSimulatorArm64", libs.room3.compiler)
@@ -114,6 +109,6 @@ dependencies {
   add("kspJvm", libs.kotlin.inject.compiler)
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<Test>().configureEach {
   useJUnitPlatform()
 }

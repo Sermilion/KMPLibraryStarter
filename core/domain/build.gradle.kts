@@ -5,11 +5,11 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.domain"
-}
-
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.domain"
+  }
+
   sourceSets {
     commonMain.dependencies {
       api(projects.core.common)
@@ -18,6 +18,11 @@ kotlin {
       api(libs.kotlin.inject.runtime)
       implementation(libs.kermit)
     }
+
+    commonTest.dependencies {
+      implementation(projects.core.testing)
+    }
+
     androidMain.dependencies {
       implementation(libs.kotlinx.coroutines.android)
       implementation(libs.paging.runtime)
@@ -35,6 +40,4 @@ dependencies {
   add("kspIosArm64", libs.kotlin.inject.compiler)
   add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
   add("kspJvm", libs.kotlin.inject.compiler)
-
-  testImplementation(projects.core.testing)
 }

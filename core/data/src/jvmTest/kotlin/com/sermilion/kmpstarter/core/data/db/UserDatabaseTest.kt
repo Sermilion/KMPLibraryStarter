@@ -17,7 +17,7 @@ class UserDatabaseTest :
 
         try {
           val user =
-            UserEntity(
+            UserDataModel(
               id = "user-1",
               name = "Sample User",
               email = "sample@example.com",

@@ -7,15 +7,18 @@ plugins {
   id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.ui"
-}
-
 compose.resources {
   publicResClass = true
 }
 
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.ui"
+    androidResources {
+      enable = true
+    }
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.common)

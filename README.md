@@ -16,7 +16,7 @@ KMPLibraryStarter provides a solid foundation for building cross-platform librar
 - **Database** - Room 3 with bundled SQLite for multiplatform persistence
 - **Networking** - Ktor client with platform-specific engines
 - **Testing** - KoTest framework with MockK
-- **Code Quality** - Detekt, ktlint, and Jacoco coverage
+- **Code Quality** - Detekt, ktlint, and aggregated Jacoco coverage
 - **Automation** - GitHub Actions check workflow and Dependabot updates
 - **Agent Guidance** - Root-level `AGENTS.md` and `CLAUDE.md` for AI-assisted maintenance
 
@@ -116,16 +116,12 @@ cd KMPLibraryStarter
 To build the iOS framework for your KMP library:
 
 ```bash
-# Build framework for all iOS targets
-./gradlew :core:ui:linkDebugFrameworkIosArm64       # Physical device
-./gradlew :core:ui:linkDebugFrameworkIosX64         # Simulator (Intel Macs)
-./gradlew :core:ui:linkDebugFrameworkIosSimulatorArm64  # Simulator (Apple Silicon)
-
-# Release builds
-./gradlew :core:ui:linkReleaseFrameworkIosArm64
+# Build currently configured iOS targets
+./gradlew :core:ui:linkIosArm64            # Physical device
+./gradlew :core:ui:linkIosSimulatorArm64   # Simulator (Apple Silicon)
 ```
 
-Frameworks are generated in: `core/ui/build/bin/ios{Target}/debugFramework/`
+Artifacts are generated under `core/ui/build/bin/ios*/`
 
 #### Consuming in iOS Project
 
@@ -201,9 +197,9 @@ The project uses convention plugins for consistent build configuration:
 
 | Plugin | Purpose |
 |--------|---------|
-| `kmp.library` | Base KMP library setup with Android, iOS, JVM targets |
+| `kmp.library` | Base KMP library setup with Android-KMP, iOS, and JVM targets |
 | `kmp.compose` | KMP library with Compose Multiplatform |
-| `kmp.jacoco` | Code coverage reporting |
+| `kmp.jacoco` | Aggregated code coverage reporting for JVM and Android host tests |
 | `kmp.lint` | Android lint configuration |
 | `kmp.detekt` | Static analysis with Detekt |
 
@@ -280,7 +276,7 @@ Data layer with Room 3 database and Ktor networking:
 
 ```kotlin
 @Entity(tableName = "users")
-data class UserEntity(
+data class UserDataModel(
   @PrimaryKey val id: String,
   val name: String,
   val email: String?,
@@ -290,13 +286,13 @@ data class UserEntity(
 @Dao
 interface UserDao {
   @Query("SELECT * FROM users ORDER BY createdAt DESC")
-  fun observeUsers(): Flow<List<UserEntity>>
+  fun observeUsers(): Flow<List<UserDataModel>>
 
   @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-  suspend fun getById(id: String): UserEntity?
+  suspend fun getById(id: String): UserDataModel?
 
   @Upsert
-  suspend fun upsert(user: UserEntity)
+  suspend fun upsert(user: UserDataModel)
 }
 ```
 
@@ -405,6 +401,8 @@ Configuration: `config/detekt/detekt.yml`
 
 Reports: `build/reports/jacoco/`
 
+The report aggregates the enabled JVM and Android host test tasks for each module that applies `kmp.jacoco`.
+
 ## Adding a New Module
 
 1. Create the module directory:
@@ -433,11 +431,11 @@ plugins {
   alias(libs.plugins.kmp.library)
 }
 
-android {
-  namespace = "com.sermilion.kmpstarter.core.newmodule"
-}
-
 kotlin {
+  android {
+    namespace = "com.sermilion.kmpstarter.core.newmodule"
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.common)
@@ -528,6 +526,10 @@ SOFTWARE.
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+Before making substantive changes, read `AGENTS.md` and `docs/ARCHITECTURE.md`, then the focused
+documents under `docs/architecture/`, for repository-specific build, architecture, naming, and
+testing conventions.
 
 ## Resources
 
